@@ -19,11 +19,11 @@ w.add(RectangleBuilding(Point(72.5, 107.5), Point(95, 25))) # The RectangleBuild
 
 
 # Let's repeat this for 4 different RectangleBuildings.
-w.add(Painting(Point(8.5, 106.5), Point(17, 27), 'gray80'))
-w.add(RectangleBuilding(Point(7.5, 107.5), Point(15, 25)))
+w.add(Painting(Point(7.5, 106.5), Point(17, 27), 'gray80'))
+w.add(RectangleBuilding(Point(6.5, 107.5), Point(15, 25)))
 
-w.add(Painting(Point(8.5, 41), Point(17, 82), 'gray80'))
-w.add(RectangleBuilding(Point(7.5, 40), Point(15, 80)))
+w.add(Painting(Point(7.5, 41), Point(17, 82), 'gray80'))
+w.add(RectangleBuilding(Point(6.5, 40), Point(15, 80)))
 
 w.add(Painting(Point(71.5, 41), Point(97, 82), 'gray80'))
 w.add(RectangleBuilding(Point(72.5, 40), Point(95, 80)))
@@ -39,12 +39,17 @@ w.add(Painting(Point(22, 81), Point(0.5, 2), 'white'))
 
 # INITIALIZE RANDOM VARIABLES
 # C1
-c1_pos = Point(20,50)
+c1_pos = Point(21,50)
 c1_vel = Point(3.0, 0)
 
 # C2
-c2_pos = Point(75,90)
+c2_pos = Point(77,90)
 c2_vel = Point(4.0,0)
+
+# C3
+c3_pos = Point(18,98)
+c3_vel = Point(0, 0)
+
 
 
 # A Car object is a dynamic object -- it can move. We construct it using its center location and heading angle.
@@ -55,6 +60,10 @@ w.add(c1)
 c2 = Car(c2_pos, np.pi, 'blue')
 c2.velocity = c2_vel # We can also specify an initial velocity just like this. Point(3.0,0)
 w.add(c2)
+
+c3 = Car(c3_pos, np.pi*3/2, 'yellow')
+c3.velocity = c3_vel # We can also specify an initial velocity just like this. Point(3.0,0)
+w.add(c3)
 
 # Pedestrian is almost the same as Car. It is a "circle" object rather than a rectangle.
 p1 = Pedestrian(Point(28,81), np.pi)
@@ -91,7 +100,13 @@ if not human_controller:
             # TODO: slow down speed of car according to momentum loss from hitting the pedestrian
         elif w.collision_exists(): # Or we can check if there is any collision at all.
             print('Collision exists somewhere...')
-            time.sleep(3)
+            time.sleep(4)
+            break
+
+        # terminal condition
+        if c1.center.y > 119:
+            print('Road cleared, collisioned avoided!')
+            time.sleep(4)
             break
     w.close()
 
