@@ -61,6 +61,7 @@ class Entity:
             angle = (heading + new_heading)/2. + beta
             new_center = self.center + (speed + new_speed)*Point(np.cos(angle), np.sin(angle))*dt / 2.
             new_velocity = Point(new_speed * np.cos(new_heading), new_speed * np.sin(new_heading))
+            # print('new_velocity = ', new_velocity.distanceTo(Point(0, 0)))
             
             '''
             # Point-mass dynamics based on
