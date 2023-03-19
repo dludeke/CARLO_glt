@@ -20,6 +20,15 @@ class Intersection:
         velocities = np.arange(3, 14)
         self.state_space = np.array([[x, y, v] for x in x_coord for y in y_coord for v in velocities])
         self.observation_space = self.state_space
+    
+    def get_reward(self, action):
+        # return reward given current state and action taken
+        return 0
+    
+    def step(self, action):
+        # update the current state given the most recent action taken
+        return 0
+
 
     # def step(self, action):
 
