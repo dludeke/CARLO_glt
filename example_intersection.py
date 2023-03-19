@@ -16,8 +16,8 @@ class Intersection:
         # The resulting self.state_space array has shape (6930, 3) and represents all possible states 
         # in a 3-dimensional state space where each state is represented by its x, y, and velocity values.
         x_coord = np.arange(0, 46)
-        y_coord = np.arange(45, 91)
-        velocities = np.arange(3, 14)
+        y_coord = np.arange(40, 91)
+        velocities = np.arange(3, 20, 0.5)
         self.state_space = np.array([[x, y, v] for x in x_coord for y in y_coord for v in velocities])
         self.observation_space = self.state_space
     
@@ -69,7 +69,7 @@ class Intersection:
     # C1
     # c1_pos = Point(21,50)
     # c1_pos = Point(120,120)
-    c1_pos = Point(21,10+30)
+    c1_pos = Point(21,10+20)
     c1_vel = Point(3.0, 0)
 
     # C2
@@ -103,6 +103,7 @@ class Intersection:
 
     w.render() # This visualizes the world we just constructed.
 
+    brake_dist_reached = False
 
     if not human_controller:
         # Let's implement some simple scenario with all agents
@@ -114,12 +115,24 @@ class Intersection:
             # All movable objects will keep their control the same as long as we don't change it.
             if k == 100: # Let's say the first Car will release throttle (and start slowing down due to friction)
                 c1.set_control(0, 0)
+                print('k == 100')
+            elif c1.center.y >= 60-20 and brake_dist_reached is False:
+                brake_dist_reached = True
+                print('Brake distance reached, 20 meters away from intersection')
+                print('c1 speed = ', c1.speed)
+                print('accelerating...')
+                c1.set_control(0, 0)
+            elif c1.center.y >= 90:
+                print('90 reached, c1 speed = ', c1.speed)
             elif k == 200: # The first Car starts pushing the brake a little bit. The second Car starts turning right with some throttle.
                 c1.set_control(0, -0.02) 
+                print('k == 200')
             elif k == 325:
+                print('k == 325')               
                 c1.set_control(0, 0.8)
                 c2.set_control(-0.45, 0.3)
             elif k == 367: # The second Car stops turning.
+                print('k = 367')
                 c2.set_control(0, 0.1)
             w.tick() # This ticks the world for one time step (dt second)
             w.render()
@@ -135,6 +148,7 @@ class Intersection:
 
             # terminal condition
             if c1.center.y > 119:
+                print('Final speed of c1 = ', c1.speed)
                 print('Road cleared, collisioned avoided!')
                 time.sleep(4)
                 break
