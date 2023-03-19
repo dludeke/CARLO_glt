@@ -8,13 +8,20 @@ class Intersection:
 
     def __init__(self):
 
+        # action_space with shape (20, 2) containing all possible combinations of acceleration and steering degree
         acc_values = [0, 1, 2, 3]
         steering_values = [0, 0.2, 0.6, -0.2, -0.6]
         self.action_space = np.array([[a, s] for a in acc_values for s in steering_values])
+
+        # The resulting self.state_space array has shape (6930, 3) and represents all possible states 
+        # in a 3-dimensional state space where each state is represented by its x, y, and velocity values.
         x_coord = np.arange(0, 46)
         y_coord = np.arange(45, 91)
-        self.state_space = np.array([[x, y] for x in x_coord for y in y_coord])
+        velocities = np.arange(3, 14)
+        self.state_space = np.array([[x, y, v] for x in x_coord for y in y_coord for v in velocities])
         self.observation_space = self.state_space
+
+    # def step(self, action):
 
     human_controller = False
 
