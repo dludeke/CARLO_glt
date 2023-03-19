@@ -1,7 +1,7 @@
 import random
 import math
 import numpy as np
-from Intersection import *
+from example_intersection import Intersection
 
 
 class QLearningAgent:
