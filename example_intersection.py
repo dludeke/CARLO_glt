@@ -7,9 +7,14 @@ import time
 class Intersection:
 
     def __init__(self):
-        self.action_space = []
-        self.state_space = []
-        self.observation_space = []
+
+        acc_values = [0, 1, 2, 3]
+        steering_values = [0, 0.2, 0.6, -0.2, -0.6]
+        self.action_space = np.array([[a, s] for a in acc_values for s in steering_values])
+        x_coord = np.arange(0, 46)
+        y_coord = np.arange(45, 91)
+        self.state_space = np.array([[x, y] for x in x_coord for y in y_coord])
+        self.observation_space = self.state_space
 
     human_controller = False
 
