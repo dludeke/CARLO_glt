@@ -8,12 +8,17 @@ class QLearningAgent:
     def __init__(self, env): 
         self.env = env
         self.state_space = env.observation_space
+        self.state_2_idx = {s:idx for idx, s in enumerate(self.state_space)}
         self.action_space = env.action_space
         self.discount_factor = 0.95
         self.Q = np.zeros((self.state_space.size, self.action_space.size))
         self.epsilon = 0.8 # probability of random arm
         self.decay = 0.9
         self.learning_rate = 0.5
+
+    # returns index of state in the Q matrix
+    def state_2_index(self, state):
+        return self.state_2_idx[state]
 
     def act(self, state):
         # epsilon greedy method of choosing action
@@ -36,8 +41,4 @@ class QLearningAgent:
         return 0
 
 if __name__ == "__main__":
-    # at each timestep, do the following: act, step, update reward 
-    return 0
-
-    
-    
+    # at each timestep, do the following: act, step, update reward
