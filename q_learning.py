@@ -10,9 +10,10 @@ class QLearningAgent:
         self.state_space = env.observation_space
         self.action_space = env.action_space
         self.discount_factor = 0.95
-        self.Q_matrix = np.zeros((self.state_space.size, self.action_space.size))
+        self.Q = np.zeros((self.state_space.size, self.action_space.size))
         self.epsilon = 0.8 # probability of random arm
         self.decay = 0.9
+        self.learning_rate = 0.5
 
     def act(self, state):
         # epsilon greedy method of choosing action
@@ -23,14 +24,12 @@ class QLearningAgent:
             self.epsilon *= self.decay
             action = self.action_space.sample()
         else:
-            action = np.argmax(self.Qmat[state,:])
+            action = np.argmax(self.Q[state,:])
         return action
 
-
-
-    def update(self, curstate, curaction, reward, nextstate):
-        # update the Q matrix
-        return 0
+     # update the Q matrix
+    def update(self, s, a, r, s_prime):
+        self.Q[s,a] = self.Q[s,a] + self.learning_rate * (r + self.discount_factor * max(self.Q[s_prime,:]) - self.Q[s,a])
     
     def train(self):
         # train the model
