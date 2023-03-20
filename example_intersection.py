@@ -17,7 +17,7 @@ class Intersection:
         # in a 3-dimensional state space where each state is represented by its x, y, and velocity values.
         x_coord = np.arange(0, 46)
         y_coord = np.arange(45, 91)
-        velocities = np.arange(3, 14)
+        velocities = np.arange(0, 14)
         self.state_space = np.array([[x, y, v] for x in x_coord for y in y_coord for v in velocities])
         self.observation_space = self.state_space
     
