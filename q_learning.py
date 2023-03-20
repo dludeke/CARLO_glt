@@ -58,8 +58,4 @@ class QLearningAgent:
 
 
 if __name__ == "__main__":
-    # at each timestep, do the following: act, step, update reward 
-    return 0
-
-    
-    
+    # at each timestep, do the following: act, step, update reward
