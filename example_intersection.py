@@ -7,7 +7,9 @@ import time
 class Intersection:
 
     def __init__(self):
-
+        # initialize the world
+        w = World(dt, width = 90, height = 90, ppm = 6) # The world is 120 meters by 120 meters. ppm is the pixels per meter.
+        
         # action_space with shape (20, 2) containing all possible combinations of acceleration and steering degree
         acc_values = [0, 1, 2, 3]
         steering_values = [0, 0.2, 0.6, -0.2, -0.6]
@@ -23,11 +25,76 @@ class Intersection:
     
     def get_reward(self, action):
         # return reward given current state and action taken
+        car_pos = (self.car_x, self.car_y)
+        ped_pos = (self.ped_x, self.ped_y)
+
+        # Check for collision with a pedestrian
+        if self.distance(car_pos, ped_pos) < 1:
+            return -150
+
+        # Check for collision with another car
+        for car in self.cars:
+            if car != self and self.distance(car_pos, (car.car_x, car.car_y)) < 1:
+                return -100
+
+        # Check for collision with a building
+        if self.car_x < 0 or self.car_x > 46 or self.car_y < 40 or self.car_y > 91:
+            return -75
+
+        # Check for proximity to a pedestrian or car
+        for car in self.cars:
+            if car != self and self.distance(car_pos, (car.car_x, car.car_y)) < 5:
+                return -20
+        if self.distance(car_pos, ped_pos) < 5:
+            return -20
+
+        # Check for close proximity to a pedestrian or car
+        for car in self.cars:
+            if car != self and self.distance(car_pos, (car.car_x, car.car_y)) < 1:
+                return -40
+        if self.distance(car_pos, ped_pos) < 1:
+            return -40
+
+        # Default case, no collision or proximity
         return 0
-    
+
+
     def step(self, action):
         # update the current state given the most recent action taken
-        return 0
+        cur_x, cur_y, cur_v = self.cur_state
+
+        # update the velocity
+        acc, steer = action
+        new_v = cur_v + 0.1 * acc - 0.5 * abs(cur_v) * steer ** 2
+        new_v = max(min(new_v, 20), 3)  # clip velocity between 3 and 20 m/s
+
+        # update the position
+        new_x = cur_x + new_v * np.cos(np.arctan2(cur_y - 45, cur_x - 18))
+        new_y = cur_y + new_v * np.sin(np.arctan2(cur_y - 45, cur_x - 18))
+
+        # check for collisions
+        reward = 0
+        done = False
+        # w.collision_exists(p1)
+        if new_x < 0 or new_x > 45 or new_y < 40 or new_y > 90:
+            reward = -75  # collision with a building
+            done = True
+        elif np.any(np.linalg.norm(self.cur_state[:2] - self.pedestrians, axis=1) < 1):
+            reward = -150  # collision with a pedestrian
+            done = True
+        elif np.any(np.linalg.norm(self.cur_state[:2] - self.cars, axis=1) < 1):
+            reward = -100  # collision with another car
+            done = True
+        elif np.any(np.linalg.norm(self.cur_state[:2] - self.pedestrians, axis=1) < 5) or \
+                np.any(np.linalg.norm(self.cur_state[:2] - self.cars, axis=1) < 5):
+            reward = -20  # close to a pedestrian or car
+        elif np.any(np.linalg.norm(self.cur_state[:2] - self.cars, axis=1) < 1):
+            reward = -40  # very close to a car
+
+        self.cur_state = np.array([new_x, new_y, new_v])
+
+        return self.cur_state, reward, done
+
 
 
     # def step(self, action):
